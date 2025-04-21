@@ -21,7 +21,7 @@ resource "aws_instance" "web_instance" {
   ami           = "ami-0c1ac8a41498c1a9c"
   instance_type = "t3.micro"
   key_name      = "keyforlab4"
-  security_groups = [aws_security_group.web_sg_existing.name]
+  security_groups = [data.aws_security_group.web_sg_existing.name]
 
   tags = {
     Name = "iit-lab6"
