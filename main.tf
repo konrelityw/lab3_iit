@@ -8,8 +8,8 @@ resource "aws_security_group" "web_sg" {
   description = "Allow HTTP and SSH traffic"
 
   ingress {
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -33,7 +33,7 @@ resource "aws_security_group" "web_sg" {
 resource "aws_instance" "web_instance" {
   ami           = "ami-0c1ac8a41498c1a9c"
   instance_type = "t3.micro"
-  key_name      = "Keyforlab4"
+  key_name      = "keyforlab4"
   security_groups = [aws_security_group.web_sg.name]
 
   tags = {
@@ -42,12 +42,14 @@ resource "aws_instance" "web_instance" {
 
   user_data = <<-EOF
               #!/bin/bash
-              apt-get update -y
-              apt-get install -y docker.io
-              systemctl start docker
-              systemctl enable docker
-              usermod -aG docker ubuntu
-              docker run -d -p 8080:8080 --name lab45-container dianay091/lab45:latest
+              sudo apt-get update -y
+              sudo apt-get install -y docker.io
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker ubuntu
+              sudo docker pull dianay091/lab45:latest
+              sudo docker run -d -p 80:80 --name lab45-container dianay091/lab45:latest
+              sudo docker run -d --name watchtower --restart unless-stopped -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower --interval 30
               EOF
 }
 
